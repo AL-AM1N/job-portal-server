@@ -33,10 +33,26 @@ async function run() {
 
     // jobs api
     app.get('/jobs', async(req, res) => {
-        const cursor = jobsCollection.find();
+        const email = req.query.email;
+        const query = {};
+        if(email){
+          query.hr_email = email;
+        }
+      
+        const cursor = jobsCollection.find(query);
         const result = await cursor.toArray();
         res.send(result);
     })
+
+    // could be done but should not be done(amra eivabe api build korbo na)
+    // app.get('/jobsByEmailAddress', async(req, res) => {
+    //   const email = req.query.email;
+    //   const query = {
+    //     rh_email: email
+    //   };
+    //   const result = await jobsCollection.find(query).toArray();
+    //   res.send(result);
+    // })
 
     app.get('/jobs/:id', async(req, res) => {
       const id = req.params.id;
@@ -74,6 +90,15 @@ async function run() {
         application.company_logo = job.company_logo;
       }
 
+      res.send(result);
+    })
+
+    app.get('/applications/job/:job_id', async (req, res) => {
+      const job_id = req.params.job_id;
+      const query = {
+        jobId: job_id
+      }
+      const result = await applicationsCollection.find(query).toArray();
       res.send(result);
     })
 
